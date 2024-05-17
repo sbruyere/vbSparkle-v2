@@ -50,7 +50,7 @@ namespace vbSparkle
             EvaluatorOptions options,
             VBScriptParser.ModuleContext @object)
             : base(
-                null,
+                options,
                 @object,
                 "<Module>")
         {

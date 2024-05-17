@@ -5,8 +5,8 @@ namespace vbSparkle
 {
     public class VbLtInteger : VBLiteral<LtIntegerContext>
     {
-        public VbLtInteger(LtIntegerContext @object)
-            : base(@object)
+        public VbLtInteger(IVBScopeObject context, LtIntegerContext @object)
+            : base(context, @object)
         {
             string quoted = @object.GetText();
             if (quoted.EndsWith("#"))

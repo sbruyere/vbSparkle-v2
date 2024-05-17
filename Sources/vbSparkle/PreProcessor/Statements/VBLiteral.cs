@@ -5,9 +5,10 @@
     {
         public T Object { get; set; }
 
-        public VBLiteral(T @object)
+        public VBLiteral(IVBScopeObject context, T @object)
         {
             Object = @object;
+            Context = context;
             Value = new DCodeBlock(@object?.GetText());
         }
 
@@ -19,6 +20,7 @@
 
     public abstract class VBLiteral
     {
+        public IVBScopeObject Context { get; set; }
         public DExpression Value { get; set; }
 
         public abstract string Prettify();

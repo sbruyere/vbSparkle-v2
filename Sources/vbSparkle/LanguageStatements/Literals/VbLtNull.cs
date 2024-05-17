@@ -4,8 +4,8 @@ namespace vbSparkle
 {
     public class VbLtNull : VBLiteral<LtNullContext>
     {
-        public VbLtNull(LtNullContext @object)
-            : base(@object)
+        public VbLtNull(IVBScopeObject context, LtNullContext @object)
+            : base(context, @object)
         {
             Value = new DCodeBlock("Null");
         }

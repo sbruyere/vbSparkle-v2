@@ -7,7 +7,6 @@ namespace vbSparkle.PreProcessor
 
     public class PPNativeObjectManager : IVBScopeObject
     {
-        public static NativeObjectManager Current { get; } = new NativeObjectManager();
 
         public Dictionary<string, VbNativeIdentifiedObject> NativeObjects { get; private set; } =
             new Dictionary<string, VbNativeIdentifiedObject>();

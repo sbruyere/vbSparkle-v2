@@ -4,8 +4,8 @@ namespace vbSparkle.PreProcessor.Statements
 {
     public class VbLtDouble : VBLiteral<LtDoubleContext>
     {
-        public VbLtDouble(LtDoubleContext @object)
-            : base(@object)
+        public VbLtDouble(IVBScopeObject context, LtDoubleContext @object)
+            : base(context, @object)
         {
             string quoted = @object.GetText();
             Value = new DMathExpression<double>(double.Parse(quoted));

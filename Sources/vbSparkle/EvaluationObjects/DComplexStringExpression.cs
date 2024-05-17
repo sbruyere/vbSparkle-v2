@@ -3,12 +3,14 @@ using System.Linq;
 using System.Text;
 using MathNet.Symbolics;
 using vbSparkle;
+using vbSparkle.Options;
 
 namespace vbSparkle.EvaluationObjects
 {
     internal class DComplexStringExpression
         : DExpression, IStringExpression
     {
+
         public List<DExpression> ConcatExpressions { get; set; } = new List<DExpression>();
 
         public override bool HasSideEffet { get; set; } = false;
@@ -16,7 +18,6 @@ namespace vbSparkle.EvaluationObjects
 
         public DComplexStringExpression()
         {
-
         }
 
         public DComplexStringExpression(DExpression leftExp)
@@ -80,7 +81,9 @@ namespace vbSparkle.EvaluationObjects
 
             if (curRightExp is DSimpleStringExpression && expression.IsValuable)
             {
-                ConcatExpressions[ConcatExpressions.Count - 1] = new DSimpleStringExpression(curRightExp.ToValueString() + expression.ToValueString(), Encoding.Unicode);
+                var options = (curRightExp as DSimpleStringExpression).Options;
+
+                ConcatExpressions[ConcatExpressions.Count - 1] = new DSimpleStringExpression(curRightExp.ToValueString() + expression.ToValueString(), Encoding.Unicode, options);
                 //((DSimpleStringExpression)curRightExp).SetValue(curRightExp.ToValueString() + expression.ToValueString()); <= this was causing side effect
                 return;
             }

@@ -8,8 +8,6 @@ namespace vbSparkle
     public class NativeObjectManager : IVBScopeObject
     {
 
-        public static NativeObjectManager Current { get; } = new NativeObjectManager();
-
         public Dictionary<string, VbNativeIdentifiedObject> NativeObjects { get; private set; } =
             new Dictionary<string, VbNativeIdentifiedObject>();
 
@@ -18,16 +16,16 @@ namespace vbSparkle
 
         public NativeObjectManager()
         {
-            Add(new VbNativeConstants(this, "vbCrLf",           new DSimpleStringExpression("\r\n", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbNewLine",        new DSimpleStringExpression("\r\n", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbCr",             new DSimpleStringExpression("\r", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbLf",             new DSimpleStringExpression("\n", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbTab",            new DSimpleStringExpression("\x9", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbBack",           new DSimpleStringExpression("\x8", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbNullChar",       new DSimpleStringExpression("\x0", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbFormFeed",       new DSimpleStringExpression("\xC", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbVerticalTab",    new DSimpleStringExpression("\xB", Encoding.Unicode)));
-            Add(new VbNativeConstants(this, "vbNullString",     new DSimpleStringExpression("", Encoding.Unicode)));
+            Add(new VbNativeConstants(this, "vbCrLf",           new DSimpleStringExpression("\r\n", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbNewLine",        new DSimpleStringExpression("\r\n", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbCr",             new DSimpleStringExpression("\r", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbLf",             new DSimpleStringExpression("\n", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbTab",            new DSimpleStringExpression("\x9", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbBack",           new DSimpleStringExpression("\x8", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbNullChar",       new DSimpleStringExpression("\x0", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbFormFeed",       new DSimpleStringExpression("\xC", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbVerticalTab",    new DSimpleStringExpression("\xB", Encoding.Unicode, this.Options)));
+            Add(new VbNativeConstants(this, "vbNullString",     new DSimpleStringExpression("", Encoding.Unicode, this.Options)));
             Add(new VbNativeConstants(this, "vbObjectError",    new DMathExpression<int>(-0x7FFC0000)));
 
             // Strings
@@ -134,7 +132,7 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "DoEvents"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "Environ"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "Environ$"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Execute"));
+            Add(new NativeMethods.VB_Execute(this));
             Add(new NativeMethods.VB_MonitoringFunction(this, "GetAllSettings"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "GetObject"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "GetSetting"));
@@ -254,6 +252,9 @@ namespace vbSparkle
 
         public VbIdentifiedObject GetIdentifiedObject(string identifier)
         {
+            if (identifier == "Execute")
+                (0).ToString();
+
             if (NativeObjects.ContainsKey(identifier.ToUpper()))
             {
                 return NativeObjects[identifier.ToUpper()];

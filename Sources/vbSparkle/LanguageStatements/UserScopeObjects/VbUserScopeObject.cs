@@ -27,12 +27,26 @@ namespace vbSparkle
         public Dictionary<string, VbUserVariable> Variables = new Dictionary<string, VbUserVariable>();
         public Dictionary<string, VbSubConstStatement> Constants = new Dictionary<string, VbSubConstStatement>();
 
+
+        public NativeObjectManager NativeObjectManager { get; } 
+
         public VbUserScopeObject(
             IVBScopeObject context, 
             T @object, 
             string identifier) 
             : base(context, @object, identifier)
         {
+            NativeObjectManager = new NativeObjectManager() { Options = context.Options };
+        }
+
+        public VbUserScopeObject(
+            EvaluatorOptions options,
+            T @object,
+            string identifier)
+            : base(null, @object, identifier)
+        {
+            this.Options = options;
+            NativeObjectManager = new NativeObjectManager() { Options = options };
         }
 
         public EvaluatorOptions _options = null;
@@ -89,6 +103,8 @@ namespace vbSparkle
 
         public virtual VbIdentifiedObject GetIdentifiedObject(string identifier)
         {
+            if (identifier.Equals("execute", StringComparison.InvariantCultureIgnoreCase))
+                (0).ToString();
             string identifierKey = identifier.ToUpper();
             VbIdentifiedObject obj1 = null;
 
@@ -97,7 +113,7 @@ namespace vbSparkle
                 return obj1;
             }
 
-            var nativeValue = NativeObjectManager.Current.GetIdentifiedObject(identifierKey);
+            var nativeValue = NativeObjectManager.GetIdentifiedObject(identifierKey);
 
             if (nativeValue != null)
                 return nativeValue;

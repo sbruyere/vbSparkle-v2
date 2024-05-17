@@ -38,6 +38,14 @@ namespace vbSparkle
 
         public override DExpression Prettify(bool partialEvaluation = false)
         {
+            var identifiedObject = IdentifiedObject;
+
+            if (identifiedObject is VbNativeFunction)
+            {
+                var funcArgs = CallArgs.ToArray();
+                return (identifiedObject as VbNativeFunction).TryEvaluate(funcArgs);
+            }
+
             if (CallArgs.Any())
                 return new DCodeBlock($"{IdentifiedObject.Name} {string.Join(", ", CallArgs.Select(v => v.Exp(partialEvaluation)))}");
             else

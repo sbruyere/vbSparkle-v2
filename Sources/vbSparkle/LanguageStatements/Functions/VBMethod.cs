@@ -97,7 +97,7 @@ namespace vbSparkle.NativeMethods
             : base(context, "StrReverse")
         {
         }
-        
+
         public override DExpression Evaluate(params DExpression[] args)
         {
             DExpression arg1 = args.FirstOrDefault();
@@ -106,12 +106,39 @@ namespace vbSparkle.NativeMethods
 
             if (!Converter.TryGetStringValue(arg1, out strArg))
                 return DefaultExpression(args);
-            
+
             string str = new string(strArg.ToCharArray().Reverse().ToArray());
 
-            return new DSimpleStringExpression(str, Encoding.Unicode);
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
+    }
+
+    public class VB_Execute
+    : VbNativeFunction
+    {
+        public VB_Execute(IVBScopeObject context)
+            : base(context, "Execute")
+        {
         }
 
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            if (Context?.Options?.ExecuteObserver != null)
+            {
+                Context.Options.ExecuteObserver.VBScriptExecuted.Add(strArg.Replace("\"\"", "\""));
+            }
+
+            return DefaultExpression(args);
+        }
     }
 
     public class VB_Replace
@@ -159,7 +186,7 @@ namespace vbSparkle.NativeMethods
 
             string str = findStr.Equals(replStr) ? expStr : expStr.Replace(findStr, replStr);
 
-            return new DSimpleStringExpression(str, Encoding.Unicode);
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
         }
 
     }
@@ -195,7 +222,7 @@ namespace vbSparkle.NativeMethods
                 return DefaultExpression(args);
 
             string str = strArg.Trim(' ');
-            return new DSimpleStringExpression(str, Encoding.Unicode);
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
         }
 
     }
@@ -233,7 +260,7 @@ namespace vbSparkle.NativeMethods
 
             string value = new string(' ', count);
 
-            return new DSimpleStringExpression(value, Encoding.Unicode);
+            return new DSimpleStringExpression(value, Encoding.Unicode, Context.Options);
         }
 
     }
@@ -265,7 +292,7 @@ namespace vbSparkle.NativeMethods
 
             //string value = Char.ConvertFromUtf32((int)ascii); //(byte) (UInt32)Math.Round(ascii) & 0x0000FFFF);
 
-            return new DSimpleStringExpression(value, Encoding.Unicode);
+            return new DSimpleStringExpression(value, Encoding.Unicode, Context.Options);
         }
 
     }
@@ -305,7 +332,7 @@ namespace vbSparkle.NativeMethods
             //string value = Encoding.ASCII.GetString(test);
             string value = new string(new char[] { VbUtils.Chr(ascii) });
 
-            return new DSimpleStringExpression(value, Encoding.Unicode);
+            return new DSimpleStringExpression(value, Encoding.Unicode, Context.Options);
         }
     }
 
@@ -342,7 +369,7 @@ namespace vbSparkle.NativeMethods
 
             string value = new string(new char[]{ VbUtils.Chr(ascii) }); 
             
-            return new DSimpleStringExpression(value, Encoding.Unicode);
+            return new DSimpleStringExpression(value, Encoding.Unicode, Context.Options);
         }
 
     }
@@ -735,7 +762,7 @@ namespace vbSparkle.NativeMethods
 
             string hexStr = $"{input:X}";
 
-            return new DSimpleStringExpression(hexStr, null);
+            return new DSimpleStringExpression(hexStr, null, Context.Options);
         }
     }
 

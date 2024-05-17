@@ -43,10 +43,7 @@ namespace vbSparkle.CLI
 
         private static void InitializeConsoleHeader()
         {
-            Console.ForegroundColor = Color.WhiteSmoke;
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            Console.ResetColor();
-            Console.ReplaceAllColorsWithDefaults();
             Console.Title = "vbSparkle " + version;
 
             Console.WriteLine(

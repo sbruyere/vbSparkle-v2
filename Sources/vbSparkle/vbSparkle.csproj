@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/airbus-cert/vbSparkle</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/airbus-cert/vbSparkle</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/sbruyere/vbSparkle</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sbruyere/vbSparkle</RepositoryUrl>
     <PackageTags>vbscript, visualbasic, vba, deobfuscation, malware, reverse</PackageTags>
     <Description>vbSparkle is a source-to-source multi-platform Visual Basic deobfuscator based on partial-evaluation and is mainly dedicated to the analysis of malicious code written in VBScript and VBA (Office Macro).
 
@@ -16,7 +16,7 @@ The parsing of Visual Basic Script and VBA is processed through the use of ANTLR
     <Copyright>Airbus CERT, Sylvain Bruyere</Copyright>
     <Authors>Airbus CERT, Sylvain Bruyere</Authors>
     <Company>Airbus</Company>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +27,7 @@ The parsing of Visual Basic Script and VBA is processed through the use of ANTLR
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="MathNet.Symbolics" Version="0.21.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
-    <PackageReference Include="vbeDecoder" Version="1.0.0" />
+    <PackageReference Include="vbeDecoder" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

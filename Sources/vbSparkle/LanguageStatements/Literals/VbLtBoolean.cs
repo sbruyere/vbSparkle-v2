@@ -6,8 +6,8 @@ namespace vbSparkle
 {
     public class VbLtBoolean : VBLiteral<LtBooleanContext>
     {
-        public VbLtBoolean(LtBooleanContext @object)
-            : base(@object)
+        public VbLtBoolean(IVBScopeObject context, LtBooleanContext @object)
+            : base(context, @object)
         {
             string quoted = @object.GetText();
             if (quoted.Equals("True", StringComparison.InvariantCultureIgnoreCase))

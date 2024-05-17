@@ -6,8 +6,8 @@ namespace vbSparkle
 {
     public class VbLtDateTime : VBLiteral<LtDateContext>
     {
-        public VbLtDateTime(LtDateContext @object)
-            : base(@object)
+        public VbLtDateTime(IVBScopeObject context, LtDateContext @object)
+            : base(context, @object)
         {
             string date = @object.GetText();
             date = date.Substring(1, date.Length - 2);

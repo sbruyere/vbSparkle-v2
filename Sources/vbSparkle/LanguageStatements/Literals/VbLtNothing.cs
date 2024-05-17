@@ -4,8 +4,8 @@ namespace vbSparkle
 {
     public class VbLtNothing : VBLiteral<LtNothingContext>
     {
-        public VbLtNothing(LtNothingContext @object)
-            : base(@object)
+        public VbLtNothing(IVBScopeObject context, LtNothingContext @object)
+            : base(context, @object)
         {
             Value = new DCodeBlock("Nothing");
         }

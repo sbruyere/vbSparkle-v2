@@ -17,43 +17,43 @@ namespace vbSparkle
                 var nContext = litContext as LtDelimitedContext;
                 DelimitedLiteralContext litContext2 = nContext.delimitedLiteral();
                 if (litContext2 is LtStringContext)
-                    Literal = new VbLtString(litContext2 as LtStringContext);
+                    Literal = new VbLtString(Context, litContext2 as LtStringContext);
 
                 if (litContext2 is LtColorContext)
-                    Literal = new VbLtColor(litContext2 as LtColorContext);
+                    Literal = new VbLtColor(Context, litContext2 as LtColorContext);
 
                 if (litContext2 is LtOctalContext)
-                    Literal = new VbLtOctal(litContext2 as LtOctalContext);
+                    Literal = new VbLtOctal(Context, litContext2 as LtOctalContext);
 
                 if (litContext2 is LtDateContext)
-                    Literal = new VbLtDateTime(litContext2 as LtDateContext);
+                    Literal = new VbLtDateTime(Context, litContext2 as LtDateContext);
 
             }
 
             if (litContext is LtIntegerContext)
-                Literal = new VbLtInteger(litContext as LtIntegerContext);
+                Literal = new VbLtInteger(Context, litContext as LtIntegerContext);
             
             if (litContext is LtFilenumberContext)
-                Literal = new VbLtFileNumber(litContext as LtFilenumberContext);
+                Literal = new VbLtFileNumber(Context, litContext as LtFilenumberContext);
 
             if (litContext is LtDoubleContext)
-                Literal = new VbLtDouble(litContext as LtDoubleContext);
+                Literal = new VbLtDouble(Context, litContext as LtDoubleContext);
 
             if (litContext is LtBooleanContext)
-                Literal = new VbLtBoolean(litContext as LtBooleanContext);
+                Literal = new VbLtBoolean(Context, litContext as LtBooleanContext);
 
             if (litContext is LtNothingContext)
-                Literal = new VbLtNothing(litContext as LtNothingContext);
+                Literal = new VbLtNothing(Context, litContext as LtNothingContext);
 
             if (litContext is LtNullContext)
-                Literal = new VbLtNull(litContext as LtNullContext);
+                Literal = new VbLtNull(Context, litContext as LtNullContext);
         }
 
         private void AssignDefault<T>(LiteralContext litContext) 
             where T: LiteralContext
         {
             if (litContext is T)
-                Literal = new VBLiteral<T>(litContext as T);
+                Literal = new VBLiteral<T>(Context, litContext as T);
         }
 
         public override DExpression Prettify(bool partialEvaluation = false)
