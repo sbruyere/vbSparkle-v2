@@ -17,17 +17,13 @@ The parsing of Visual Basic Script and VBA is processed through the use of ANTLR
     <Authors>Airbus CERT, Sylvain Bruyere</Authors>
     <Company>Airbus</Company>
     <Version>1.0.3</Version>
+    <RootNamespace>vbSparkle</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
-    <PackageReference Include="MathNet.Symbolics" Version="0.21.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
-    <PackageReference Include="vbeDecoder" Version="1.0.1" />
+    <PackageReference Include="MathNet.Symbolics" Version="0.25.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    <PackageReference Include="vbeDecoder" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +44,10 @@ The parsing of Visual Basic Script and VBA is processed through the use of ANTLR
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\USR-S974\Downloads\antlr4-dev\antlr4-dev\runtime\CSharp\src\Antlr4.csproj" />
   </ItemGroup>
 
   <ItemGroup>

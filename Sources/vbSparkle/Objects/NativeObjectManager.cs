@@ -127,11 +127,11 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "Choose"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "Command"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "Command$"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "CreateObject"));
+            Add(new NativeMethods.VB_CreateObject(this));
             Add(new NativeMethods.VB_MonitoringFunction(this, "DeleteSetting"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "DoEvents"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Environ"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Environ$"));
+            Add(new NativeMethods.VB_Environ(this));
+            Add(new NativeMethods.VB_EnvironS(this));
             Add(new NativeMethods.VB_Execute(this));
             Add(new NativeMethods.VB_MonitoringFunction(this, "GetAllSettings"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "GetObject"));
@@ -142,7 +142,7 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "Partition"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "SaveSetting"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "SendKeys"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Shell"));
+            Add(new NativeMethods.VB_Shell(this));
             Add(new NativeMethods.VB_MonitoringFunction(this, "Switch"));           // TODO
 
             // Information

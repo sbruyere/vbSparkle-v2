@@ -6,7 +6,7 @@
     },
     "Sample_7": {
       "commandName": "Project",
-      "commandLineArgs": "-p $(SolutionDir)\\Resources\\samples\\sample_7.txt"
+      "commandLineArgs": "-p $(SolutionDir)\\Resources\\samples\\sample_11.txt"
     },
     "Sample_10": {
       "commandName": "Project",

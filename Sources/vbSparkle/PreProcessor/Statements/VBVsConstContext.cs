@@ -1,4 +1,4 @@
-﻿using static vbSparkle.VBPreprocessorsParser;
+﻿using static VBPreprocessorsParser;
 
 namespace vbSparkle.PreProcessor.Statements
 {

@@ -19,11 +19,17 @@ namespace vbSparkle.Options
         public List<string> CreateObjectObserved { get; set; } = new List<string>();
     }
 
+    public class ShellObserver
+    {
+        public List<string> ShellObserved { get; set; } = new List<string>();
+    }
+
     public class EvaluatorOptions
     {
         public LargeStringAllocationObserver LargeStringAllocationObserver  { get;set;} = null;
         public ExecuteObserver ExecuteObserver { get; set; } = null;
         public CreateObjectObserver CreateObjectObserver { get; set; } = null;
+        public ShellObserver ShellObserver { get; set; } = null;
 
         public SymbolRenamingMode SymbolRenamingMode { get; set; } = SymbolRenamingMode.None;
         public JunkCodeProcessingMode JunkCodeProcessingMode { get; set; } = JunkCodeProcessingMode.Comment;

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using static vbSparkle.VBScriptParser;
+using static VBScriptParser;
 
 namespace vbSparkle
 {

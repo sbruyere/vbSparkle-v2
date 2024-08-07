@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Symbolics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -110,6 +111,107 @@ namespace vbSparkle.NativeMethods
             string str = new string(strArg.ToCharArray().Reverse().ToArray());
 
             return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
+    }
+    public class VB_EnvironS : VbNativeFunction
+    {
+        public VB_EnvironS(IVBScopeObject context)
+            : base(context, "Environ$")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            return new DSimpleStringExpression($"%{strArg}%", Encoding.Unicode, Context.Options);
+        }
+    }
+
+    public class VB_Environ
+    : VbNativeFunction
+    {
+        public VB_Environ(IVBScopeObject context)
+            : base(context, "Environ")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            return new DSimpleStringExpression($"%{strArg}%", Encoding.Unicode, Context.Options);
+        }
+    }
+
+
+    public class VB_CreateObject
+    : VbNativeFunction
+    {
+        public VB_CreateObject(IVBScopeObject context)
+            : base(context, "CreateObject")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            if (Context?.Options?.CreateObjectObserver != null)
+            {
+                Context.Options.CreateObjectObserver.CreateObjectObserved.Add(strArg.Replace("\"\"", "\""));
+            }
+
+            return DefaultExpression(args);
+        }
+    }
+
+    public class VB_Shell
+    : VbNativeFunction
+    {
+        public VB_Shell(IVBScopeObject context)
+            : base(context, "Shell")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            if (Context?.Options?.ShellObserver != null)
+            {
+                Context.Options.ShellObserver.ShellObserved.Add(strArg.Replace("\"\"", "\""));
+            }
+
+            return DefaultExpression(args);
         }
     }
 

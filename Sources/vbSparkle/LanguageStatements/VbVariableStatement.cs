@@ -148,7 +148,13 @@ namespace vbSparkle
             }
 
             if (IsTypeDefined)
+            {
+                if (VType.ToLower() == "string")
+                {
+                    this.Context.SetVarValue(IdentifiedObject.Identifier, new DSimpleStringExpression(string.Empty, System.Text.Encoding.Unicode, this.Context.Options));
+                }
                 return new DCodeBlock(codeBlock + " As " + VType);
+            }
             else
                 return new DCodeBlock(codeBlock);
 

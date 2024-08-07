@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-namespace vbSparkle
-{
+using vbSparkle;
+//namespace vbSparkle
+//{
     public partial class VBScriptParser
     {
         public partial class LiteralContext : ILiteralContext
@@ -16,4 +16,4 @@ namespace vbSparkle
 
         }
     }
-}
+//}

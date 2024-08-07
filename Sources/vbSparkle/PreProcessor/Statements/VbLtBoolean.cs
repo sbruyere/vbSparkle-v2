@@ -1,6 +1,6 @@
 ﻿using System;
 using vbSparkle.EvaluationObjects;
-using static vbSparkle.VBPreprocessorsParser;
+using static VBPreprocessorsParser;
 
 namespace vbSparkle.PreProcessor.Statements
 {

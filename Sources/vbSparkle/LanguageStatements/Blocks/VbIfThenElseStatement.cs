@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using vbSparkle.Options;
-using static vbSparkle.VBScriptParser;
+using static VBScriptParser;
 
 namespace vbSparkle
 {

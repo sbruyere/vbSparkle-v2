@@ -1,6 +1,6 @@
 ﻿using vbSparkle.EvaluationObjects;
 using vbSparkle.NativeMethods;
-using static vbSparkle.VBScriptParser;
+using static VBScriptParser;
 
 namespace vbSparkle
 {

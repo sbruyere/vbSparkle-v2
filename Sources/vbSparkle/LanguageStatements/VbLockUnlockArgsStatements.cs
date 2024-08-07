@@ -2,7 +2,7 @@
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
 using System.Linq;
-using static vbSparkle.VBScriptParser;
+using static VBScriptParser;
 
 namespace vbSparkle
 {

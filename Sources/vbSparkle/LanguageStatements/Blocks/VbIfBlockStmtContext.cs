@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using vbSparkle.NativeMethods;
-using static vbSparkle.VBScriptParser;
+using static VBScriptParser;
 
 namespace vbSparkle
 {

@@ -1,4 +1,4 @@
-﻿using static vbSparkle.VBScriptParser;
+﻿using static VBScriptParser;
 
 namespace vbSparkle
 {
