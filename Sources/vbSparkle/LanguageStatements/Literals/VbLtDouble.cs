@@ -8,7 +8,7 @@ namespace vbSparkle
             : base(context, @object)
         {
             string quoted = @object.GetText();
-            Value = new DMathExpression<double>(double.Parse(quoted));
+            Value = new DMathExpression<double>(double.Parse(quoted.Replace(".",",")));
         }
 
         public override string Prettify()

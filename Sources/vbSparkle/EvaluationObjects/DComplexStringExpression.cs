@@ -7,6 +7,45 @@ using vbSparkle.Options;
 
 namespace vbSparkle.EvaluationObjects
 {
+    public class DArrayExpression : DExpression
+    {
+        public List<DExpression> Items { get; set; }
+
+        public DArrayExpression(int ubound)
+        {
+            Items = (new DExpression[ubound+1]).ToList();
+        }
+        public DArrayExpression(IEnumerable<DExpression> array)
+        {
+            Items = array.ToList();
+        }
+
+        public override bool IsValuable { get => true; set => throw new System.NotImplementedException(); }
+        public override bool HasSideEffet { get => false; set => throw new System.NotImplementedException(); }
+
+        public override string ToExpressionString()
+        {
+            string[] dExpressions = Items.Select(v=> v.ToExpressionString()).ToArray();
+            return "Array(" + string.Join(", ", dExpressions) + ")";
+        }
+
+        public override string ToValueString()
+        {
+            return ToExpressionString();
+        }
+
+        public DExpression this[int index]
+        {
+            get => Items[index];
+            set => Items[index] = value;
+        }
+
+        internal override SymbolicExpression GetSymExp()
+        {
+            return SymbolicExpression.Variable(ToExpressionString());
+        }
+    }
+
     internal class DComplexStringExpression
         : DExpression, IStringExpression
     {

@@ -1,4 +1,5 @@
 ﻿using MathNet.Symbolics;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,6 +159,863 @@ namespace vbSparkle.NativeMethods
         }
     }
 
+    public class VB_FV : VbNativeFunction
+    {
+        public VB_FV(IVBScopeObject context)
+            : base(context, "FV")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, nper, pmt, pv = 0.0;
+                int type = (int)Financial.DueDate.EndOfPeriod;
+
+                // Retrieve mandatory arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out nper) ||
+                    !Converter.TryGetDoubleValue(args[2], out pmt))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve optional arguments
+                if (args.Length > 3 && !Converter.TryGetDoubleValue(args[3], out pv))
+                {
+                    pv = 0.0; // Default value if not provided
+                }
+
+                if (args.Length > 4 && !Converter.TryGetInt32Value(args[4], out type))
+                {
+                    type = (int)Financial.DueDate.EndOfPeriod; // Default value if not provided
+                }
+
+                // Calculate FV
+                double fv = Financial.FV(rate, nper, pmt, pv, (Financial.DueDate)type);
+
+                return new DMathExpression<double>(fv) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+
+    }
+
+    public class VB_DDB : VbNativeFunction
+    {
+        public VB_DDB(IVBScopeObject context)
+            : base(context, "DDB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double cost, salvage, life, period;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out cost) ||
+                    !Converter.TryGetDoubleValue(args[1], out salvage) ||
+                    !Converter.TryGetDoubleValue(args[2], out life) ||
+                    !Converter.TryGetDoubleValue(args[3], out period))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate DDB
+                double rate = 2.0 / life;
+                double depreciation = cost * Math.Pow(1 - rate, period - 1) * rate;
+
+                // Ensure depreciation doesn't go below the salvage value
+                double accumulatedDepreciation = cost * (1 - Math.Pow(1 - rate, period));
+                if (accumulatedDepreciation > (cost - salvage))
+                {
+                    depreciation = cost - salvage - accumulatedDepreciation + depreciation;
+                }
+
+                return new DMathExpression<double>(depreciation) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    public class VB_IPmt : VbNativeFunction
+    {
+        public VB_IPmt(IVBScopeObject context)
+            : base(context, "IPmt")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, per, nper, pv;
+                double fv = 0.0; // Default value for future value
+                int type = 0;    // Default value for type (end of period)
+
+                // Retrieve mandatory arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out per) ||
+                    !Converter.TryGetDoubleValue(args[2], out nper) ||
+                    !Converter.TryGetDoubleValue(args[3], out pv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve optional arguments
+                if (args.Length > 4 && !Converter.TryGetDoubleValue(args[4], out fv))
+                {
+                    fv = 0.0; // Default if not provided
+                }
+
+                if (args.Length > 5 && !Converter.TryGetInt32Value(args[5], out type))
+                {
+                    type = 0; // Default if not provided (0 = end of period, 1 = beginning)
+                }
+
+                // Calculate the interest payment
+                double ipmt = Financial.IPmt(rate, per, nper, pv, fv, (Financial.DueDate)type);
+
+                return new DMathExpression<double>(ipmt) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+
+    public class VB_IRR : VbNativeFunction
+    {
+        public VB_IRR(IVBScopeObject context)
+            : base(context, "IRR")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DArrayExpression cashFlowsArray;
+                double guess = 0.1;
+
+                // Retrieve the array of cash flows
+                if (!Converter.TryGetArrayExpression(args[0], out cashFlowsArray))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optionally retrieve the guess value
+                if (args.Length > 1 && !Converter.TryGetDoubleValue(args[1], out guess))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Convert the array items to doubles, return default if conversion fails
+                double[] cashFlows = new double[cashFlowsArray.Items.Count];
+                for (int i = 0; i < cashFlowsArray.Items.Count; i++)
+                {
+                    if (!Converter.TryGetDoubleValue(cashFlowsArray.Items[i], out cashFlows[i]))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+
+                // Calculate IRR using Newton-Raphson method or similar
+                double irr = (double)Financial.CalculateIRR(cashFlows, guess);
+
+                return new DMathExpression<double>(irr) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+
+    }
+
+    public class VB_MIRR : VbNativeFunction
+    {
+        public VB_MIRR(IVBScopeObject context)
+            : base(context, "MIRR")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DArrayExpression cashFlowsArray;
+                double financeRate, reinvestRate;
+
+                // Retrieve the array of cash flows
+                if (!Converter.TryGetArrayExpression(args[0], out cashFlowsArray))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve finance rate and reinvestment rate
+                if (!Converter.TryGetDoubleValue(args[1], out financeRate) ||
+                    !Converter.TryGetDoubleValue(args[2], out reinvestRate))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Convert the array items to doubles, return default if conversion fails
+                double[] cashFlows = new double[cashFlowsArray.Items.Count];
+                for (int i = 0; i < cashFlowsArray.Items.Count; i++)
+                {
+                    if (!Converter.TryGetDoubleValue(cashFlowsArray.Items[i], out cashFlows[i]))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+
+                // Calculate MIRR
+                double mirr = Financial.MIRR(ref cashFlows, financeRate, reinvestRate);
+
+                return new DMathExpression<double>(mirr) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+
+    }
+
+    public class VB_NPV : VbNativeFunction
+    {
+        public VB_NPV(IVBScopeObject context)
+            : base(context, "NPV")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate;
+                DArrayExpression cashFlowsArray;
+
+                // Retrieve the discount rate and cash flows
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetArrayExpression(args[1], out cashFlowsArray))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Convert the array items to doubles, return default if conversion fails
+                double[] cashFlows = new double[cashFlowsArray.Items.Count];
+                for (int i = 0; i < cashFlowsArray.Items.Count; i++)
+                {
+                    if (!Converter.TryGetDoubleValue(cashFlowsArray.Items[i], out cashFlows[i]))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+
+                // Calculate NPV
+                double npv = 0;
+                for (int t = 0; t < cashFlows.Length; t++)
+                {
+                    npv += cashFlows[t] / Math.Pow(1 + rate, t + 1);
+                }
+
+                return new DMathExpression<double>(npv) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+
+    public class VB_Pmt : VbNativeFunction
+    {
+        public VB_Pmt(IVBScopeObject context)
+            : base(context, "Pmt")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, nper, pv, fv = 0;
+                int type = 0;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out nper) ||
+                    !Converter.TryGetDoubleValue(args[2], out pv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optional arguments
+                if (args.Length > 3 && !Converter.TryGetDoubleValue(args[3], out fv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (args.Length > 4 && !Converter.TryGetInt32Value(args[4], out type))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate Pmt
+                double pmt;
+                if (rate == 0)
+                {
+                    pmt = -(pv + fv) / nper;
+                }
+                else
+                {
+                    pmt = -((pv * Math.Pow(1 + rate, nper) + fv) / ((1 + rate * type) * (Math.Pow(1 + rate, nper) - 1) / rate));
+                }
+
+                return new DMathExpression<double>(pmt) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    public class VB_PPmt : VbNativeFunction
+    {
+        public VB_PPmt(IVBScopeObject context)
+            : base(context, "PPmt")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, per, nper, pv;
+                double fv = 0.0; // Default value for future value
+                int type = 0;    // Default value for type (end of period)
+
+                // Retrieve mandatory arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out per) ||
+                    !Converter.TryGetDoubleValue(args[2], out nper) ||
+                    !Converter.TryGetDoubleValue(args[3], out pv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve optional arguments
+                if (args.Length > 4 && !Converter.TryGetDoubleValue(args[4], out fv))
+                {
+                    fv = 0.0; // Default if not provided
+                }
+
+                if (args.Length > 5 && !Converter.TryGetInt32Value(args[5], out type))
+                {
+                    type = 0; // Default if not provided (0 = end of period, 1 = beginning)
+                }
+
+                // Calculate PPmt
+                double ppmt = Financial.PPmt(rate, per, nper, pv, fv, (Financial.DueDate)type);
+
+                return new DMathExpression<double>(ppmt) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+
+    public class VB_PV : VbNativeFunction
+    {
+        public VB_PV(IVBScopeObject context)
+            : base(context, "PV")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, nper, pmt, fv = 0;
+                int type = 0;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out nper) ||
+                    !Converter.TryGetDoubleValue(args[2], out pmt))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optional arguments
+                if (args.Length > 3 && !Converter.TryGetDoubleValue(args[3], out fv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (args.Length > 4 && !Converter.TryGetInt32Value(args[4], out type))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate PV
+                double pv;
+                if (rate == 0)
+                {
+                    pv = -(pmt * nper + fv);
+                }
+                else
+                {
+                    pv = -((fv + pmt * (1 + rate * type) * (Math.Pow(1 + rate, nper) - 1) / rate) / Math.Pow(1 + rate, nper));
+                }
+
+                return new DMathExpression<double>(pv) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+    public class VB_Rate : VbNativeFunction
+    {
+        public VB_Rate(IVBScopeObject context)
+            : base(context, "Rate")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double nper, pmt, pv, fv = 0;
+                int type = 0;
+                double guess = 0.1;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out nper) ||
+                    !Converter.TryGetDoubleValue(args[1], out pmt) ||
+                    !Converter.TryGetDoubleValue(args[2], out pv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optional arguments
+                if (args.Length > 3 && !Converter.TryGetDoubleValue(args[3], out fv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (args.Length > 4 && !Converter.TryGetInt32Value(args[4], out type))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (args.Length > 5 && !Converter.TryGetDoubleValue(args[5], out guess))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate Rate using Newton-Raphson method
+                double rate = CalculateRate(nper, pmt, pv, fv, type, guess);
+
+                return new DMathExpression<double>(rate) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+
+        private double CalculateRate(double nper, double pmt, double pv, double fv, int type, double guess)
+        {
+            const double tolerance = 1e-6;
+            const int maxIterations = 100;
+            double rate = guess;
+
+            for (int i = 0; i < maxIterations; i++)
+            {
+                double fValue = pv * Math.Pow(1 + rate, nper) + pmt * (1 + rate * type) * (Math.Pow(1 + rate, nper) - 1) / rate + fv;
+                double fDerivative = nper * pv * Math.Pow(1 + rate, nper - 1) - pmt * (1 + rate * type) * (Math.Pow(1 + rate, nper) - 1) / (rate * rate) + nper * pmt * (1 + rate * type) * Math.Pow(1 + rate, nper - 1) / rate;
+
+                double newRate = rate - fValue / fDerivative;
+
+                if (Math.Abs(newRate - rate) < tolerance)
+                {
+                    return newRate;
+                }
+
+                rate = newRate;
+            }
+
+            throw new Exception("Rate did not converge");
+        }
+    }
+    public class VB_SLN : VbNativeFunction
+    {
+        public VB_SLN(IVBScopeObject context)
+            : base(context, "SLN")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double cost, salvage, life;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out cost) ||
+                    !Converter.TryGetDoubleValue(args[1], out salvage) ||
+                    !Converter.TryGetDoubleValue(args[2], out life))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate SLN
+                double depreciation = (cost - salvage) / life;
+
+                return new DMathExpression<double>(depreciation) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+    public class VB_SYD : VbNativeFunction
+    {
+        public VB_SYD(IVBScopeObject context)
+            : base(context, "SYD")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double cost, salvage, life, period;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out cost) ||
+                    !Converter.TryGetDoubleValue(args[1], out salvage) ||
+                    !Converter.TryGetDoubleValue(args[2], out life) ||
+                    !Converter.TryGetDoubleValue(args[3], out period))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate SYD
+                double sumOfYearsDigits = (life * (life + 1)) / 2;
+                double depreciation = ((cost - salvage) * (life - period + 1)) / sumOfYearsDigits;
+
+                return new DMathExpression<double>(depreciation) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    public class VB_NPer : VbNativeFunction
+    {
+        public VB_NPer(IVBScopeObject context)
+            : base(context, "NPer")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                double rate, pmt, pv, fv = 0;
+                int type = 0;
+
+                // Retrieve arguments
+                if (!Converter.TryGetDoubleValue(args[0], out rate) ||
+                    !Converter.TryGetDoubleValue(args[1], out pmt) ||
+                    !Converter.TryGetDoubleValue(args[2], out pv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optional arguments
+                if (args.Length > 3 && !Converter.TryGetDoubleValue(args[3], out fv))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (args.Length > 4 && !Converter.TryGetInt32Value(args[4], out type))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Calculate NPer
+                double nper;
+                if (rate == 0)
+                {
+                    nper = -(pv + fv) / pmt;
+                }
+                else
+                {
+                    nper = Math.Log((pmt * (1 + rate * type) - fv * rate) / (pv * rate + pmt * (1 + rate * type))) / Math.Log(1 + rate);
+                }
+
+                return new DMathExpression<double>(nper) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    
+
+
+    public class VB_Array : VbNativeFunction
+    {
+        public VB_Array(IVBScopeObject context)
+            : base(context, "Array")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            // Create a new DArrayExpression from the provided arguments
+            var arrayExpression = new DArrayExpression(args);
+
+            // Return the DArrayExpression
+            return arrayExpression;
+        }
+    }
+
+    public class VB_LBound : VbNativeFunction
+    {
+        public VB_LBound(IVBScopeObject context)
+            : base(context, "LBound")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DArrayExpression arrayExpression;
+                int dimension = 1; // Default dimension is 1
+
+                // Retrieve the array
+                if (!Converter.TryGetArrayExpression(args[0], out arrayExpression))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optionally retrieve the dimension (1-based index)
+                if (args.Length > 1 && !Converter.TryGetInt32Value(args[1], out dimension))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (dimension != 1)
+                {
+                    throw new ArgumentException("Only single-dimensional arrays are supported.");
+                }
+
+                // In VBA, the default lower bound is typically 0
+                return new DMathExpression<int>(0) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+    public class VB_UBound : VbNativeFunction
+    {
+        public VB_UBound(IVBScopeObject context)
+            : base(context, "UBound")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DArrayExpression arrayExpression;
+                int dimension = 1; // Default dimension is 1
+
+                // Retrieve the array
+                if (!Converter.TryGetArrayExpression(args[0], out arrayExpression))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Optionally retrieve the dimension (1-based index)
+                if (args.Length > 1 && !Converter.TryGetInt32Value(args[1], out dimension))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (dimension != 1)
+                {
+                    throw new ArgumentException("Only single-dimensional arrays are supported.");
+                }
+
+                // Return the upper bound, which is the count of items minus one
+                int upperBound = arrayExpression.Items.Count - 1;
+                return new DMathExpression<int>(upperBound) { HasSideEffet = false };
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    public class VB_Join : VbNativeFunction
+    {
+        public VB_Join(IVBScopeObject context)
+            : base(context, "Join")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DArrayExpression arrayExpr;
+                string delimiter = " "; // Default delimiter
+
+                // Retrieve the array
+                if (!Converter.TryGetArrayExpression(args[0], out arrayExpr))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve the delimiter if provided
+                if (args.Length > 1)
+                {
+                    if (!Converter.TryGetStringValue(args[1], out delimiter))
+                    {
+                        delimiter = " "; // Default to space if conversion fails
+                    }
+                }
+
+                // Convert the array items to strings
+                List<string> items = new List<string>();
+                foreach (var item in arrayExpr.Items)
+                {
+                    string strItem;
+                    if (Converter.TryGetStringValue(item, out strItem))
+                    {
+                        items.Add(strItem);
+                    }
+                    else
+                    {
+                        return DefaultExpression(args);
+                        //items.Add(item.ToExpressionString()); // Fallback to the expression string
+                    }
+                }
+
+                // Join the items with the specified delimiter
+                string result = string.Join(delimiter, items);
+
+                return new DSimpleStringExpression(result, Encoding.Unicode, Context.Options);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+    public class VB_Split : VbNativeFunction
+    {
+        public VB_Split(IVBScopeObject context)
+            : base(context, "Split")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                string expression;
+                string delimiter = " "; // Default delimiter
+                int limit = -1; // Default limit (no limit)
+                int compare = 0; // Default comparison type (binary)
+
+                // Retrieve the string to split
+                if (!Converter.TryGetStringValue(args[0], out expression))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Retrieve the delimiter if provided
+                if (args.Length > 1 && !Converter.TryGetStringValue(args[1], out delimiter))
+                {
+                    delimiter = " "; // Default to space if conversion fails
+                }
+
+                // Retrieve the limit if provided
+                if (args.Length > 2 && !Converter.TryGetInt32Value(args[2], out limit))
+                {
+                    limit = -1; // Default to no limit if conversion fails
+                }
+
+                // Retrieve the comparison type if provided
+                if (args.Length > 3 && !Converter.TryGetInt32Value(args[3], out compare))
+                {
+                    compare = 0; // Default to binary compare if conversion fails
+                }
+
+                // Adjust the expression and delimiter for case-insensitive comparison if necessary
+                if (compare == 1) // Text comparison
+                {
+                    expression = expression.ToLowerInvariant();
+                    delimiter = delimiter.ToLowerInvariant();
+                }
+
+                // Split the string
+                string[] resultArray = limit > 0
+                    ? expression.Split(new string[] { delimiter }, limit, StringSplitOptions.None)
+                    : expression.Split(new string[] { delimiter }, StringSplitOptions.None);
+
+                // Convert the result into a DArrayExpression
+                List<DExpression> resultExpressions = new List<DExpression>();
+                foreach (var item in resultArray)
+                {
+                    resultExpressions.Add(new DSimpleStringExpression(item, Encoding.Unicode, Context.Options));
+                }
+
+                return new DArrayExpression(resultExpressions);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+
 
     public class VB_CreateObject
     : VbNativeFunction
@@ -293,6 +1151,509 @@ namespace vbSparkle.NativeMethods
 
     }
 
+    public class VB_Mid_S
+     : VB_Mid
+    {
+        public VB_Mid_S(IVBScopeObject context)
+       : base(context, "Mid$")
+        {
+        }
+    }
+
+    public class VB_InStr : VbNativeFunction
+    {
+        public VB_InStr(IVBScopeObject context)
+            : base(context, "InStr")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            int start = 1;
+            string string1, string2;
+            StringComparison comparisonType = StringComparison.Ordinal;
+
+            // If 4 arguments are passed, the first is the start position and the last is the comparison type
+            if (args.Length == 4)
+            {
+                if (!Converter.TryGetInt32Value(args[0], out start))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetStringValue(args[1], out string1) ||
+                    !Converter.TryGetStringValue(args[2], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetInt32Value(args[3], out int comparisonMode))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Set the comparison type
+                comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            }
+            // If 3 arguments are passed, the first can be start or comparison type based on their type
+            else if (args.Length == 3)
+            {
+                if (args[0] is DMathExpression)
+                {
+                    if (!Converter.TryGetInt32Value(args[0], out start))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    if (!Converter.TryGetStringValue(args[1], out string1) ||
+                        !Converter.TryGetStringValue(args[2], out string2))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+                else
+                {
+                    if (!Converter.TryGetStringValue(args[0], out string1) ||
+                        !Converter.TryGetStringValue(args[1], out string2))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    if (!Converter.TryGetInt32Value(args[2], out int comparisonMode))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                }
+            }
+            // If 2 arguments are passed, they are the strings to compare
+            else if (args.Length == 2)
+            {
+                if (!Converter.TryGetStringValue(args[0], out string1) ||
+                    !Converter.TryGetStringValue(args[1], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+            }
+            else
+            {
+                return DefaultExpression(args);
+            }
+
+            // Adjust for 1-based index
+            start = start - 1;
+
+            // Perform the search
+            int position = string1.IndexOf(string2, start, comparisonType);
+
+            // Convert the result back to 1-based index
+            position = position == -1 ? 0 : position + 1;
+
+            return new DMathExpression<int>(position) { HasSideEffet = false };
+        }
+    }
+
+    public class VB_InStrB : VbNativeFunction
+    {
+        public VB_InStrB(IVBScopeObject context)
+            : base(context, "InStrB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            int startByte = 1;
+            string string1, string2;
+            StringComparison comparisonType = StringComparison.Ordinal;
+
+            // Convert strings to byte arrays using Unicode encoding
+            byte[] byteArray1, byteArray2;
+
+            // If 4 arguments are passed, the first is the start byte position and the last is the comparison type
+            if (args.Length == 4)
+            {
+                if (!Converter.TryGetInt32Value(args[0], out startByte))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetStringValue(args[1], out string1) ||
+                    !Converter.TryGetStringValue(args[2], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetInt32Value(args[3], out int comparisonMode))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Set the comparison type
+                comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            }
+            // If 3 arguments are passed, the first can be start byte position or comparison type based on their type
+            else if (args.Length == 3)
+            {
+                if (args[0] is DMathExpression)
+                {
+                    if (!Converter.TryGetInt32Value(args[0], out startByte))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    if (!Converter.TryGetStringValue(args[1], out string1) ||
+                        !Converter.TryGetStringValue(args[2], out string2))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+                else
+                {
+                    if (!Converter.TryGetStringValue(args[0], out string1) ||
+                        !Converter.TryGetStringValue(args[1], out string2))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    if (!Converter.TryGetInt32Value(args[2], out int comparisonMode))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                }
+            }
+            // If 2 arguments are passed, they are the strings to compare
+            else if (args.Length == 2)
+            {
+                if (!Converter.TryGetStringValue(args[0], out string1) ||
+                    !Converter.TryGetStringValue(args[1], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+            }
+            else
+            {
+                return DefaultExpression(args);
+            }
+
+            // Convert strings to byte arrays
+            byteArray1 = Encoding.Unicode.GetBytes(string1);
+            byteArray2 = Encoding.Unicode.GetBytes(string2);
+
+            // Adjust for 1-based index (convert to 0-based)
+            startByte = (startByte - 1) / 2;  // Dividing by 2 because each character is 2 bytes in Unicode
+
+
+            // Perform the search within the byte array
+            int bytePosition = IndexOfByteArray(byteArray1, byteArray2, startByte);
+
+            // Convert the result back to 1-based index
+            bytePosition = bytePosition == -1 ? 0 : bytePosition + 1;
+
+            return new DMathExpression<int>(bytePosition) { HasSideEffet = false };
+        }
+
+        private int IndexOfByteArray(byte[] byteArray1, byte[] byteArray2, int startByte)
+        {
+            for (int i = startByte; i <= byteArray1.Length - byteArray2.Length; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < byteArray2.Length; j++)
+                {
+                    if (byteArray1[i + j] != byteArray2[j])
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) return i;
+            }
+            return -1;
+        }
+    }
+
+    public class VB_InStrRev : VbNativeFunction
+    {
+        public VB_InStrRev(IVBScopeObject context)
+            : base(context, "InStrRev")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            string string1, string2;
+            int start = -1;  // Start position defaults to the end of the string
+            StringComparison comparisonType = StringComparison.Ordinal;
+
+            // If 4 arguments are passed, the first is the string, second is the substring, third is start, and fourth is comparison mode
+            if (args.Length == 4)
+            {
+                if (!Converter.TryGetStringValue(args[0], out string1) ||
+                    !Converter.TryGetStringValue(args[1], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetInt32Value(args[2], out start))
+                {
+                    return DefaultExpression(args);
+                }
+
+                if (!Converter.TryGetInt32Value(args[3], out int comparisonMode))
+                {
+                    return DefaultExpression(args);
+                }
+
+                // Set the comparison type
+                comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            }
+            // If 3 arguments are passed, they can be the strings and start position, or strings and comparison mode
+            else if (args.Length == 3)
+            {
+                if (args[2] is DMathExpression)
+                {
+                    if (!Converter.TryGetStringValue(args[0], out string1) ||
+                        !Converter.TryGetStringValue(args[1], out string2) ||
+                        !Converter.TryGetInt32Value(args[2], out start))
+                    {
+                        return DefaultExpression(args);
+                    }
+                }
+                else
+                {
+                    if (!Converter.TryGetStringValue(args[0], out string1) ||
+                        !Converter.TryGetStringValue(args[1], out string2))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    if (!Converter.TryGetInt32Value(args[2], out int comparisonMode))
+                    {
+                        return DefaultExpression(args);
+                    }
+
+                    comparisonType = comparisonMode == 1 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                }
+            }
+            // If 2 arguments are passed, they are the strings to compare
+            else if (args.Length == 2)
+            {
+                if (!Converter.TryGetStringValue(args[0], out string1) ||
+                    !Converter.TryGetStringValue(args[1], out string2))
+                {
+                    return DefaultExpression(args);
+                }
+            }
+            else
+            {
+                return DefaultExpression(args);
+            }
+
+            // If start is not provided, or if it's set to -1, it means start from the end of the string
+            if (start == -1 || start > string1.Length)
+            {
+                start = string1.Length;
+            }
+
+            // Adjust for 1-based index by subtracting 1 (since start in C# is 0-based)
+            start = start - 1;
+
+            // Perform the reverse search
+            int position = string1.LastIndexOf(string2, start, comparisonType);
+
+            // Convert the result back to 1-based index
+            position = position == -1 ? 0 : position + 1;
+
+            return new DMathExpression<int>(position) { HasSideEffet = false };
+        }
+    }
+
+    public class VB_Len : VbNativeFunction
+    {
+        public VB_Len(IVBScopeObject context)
+            : base(context, "Len")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            string strArg;
+
+            // Check if the argument is valid and can be converted to a string
+            if (!Converter.TryGetStringValue(args[0], out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            // The length in characters is simply the length of the string
+            int charLength = strArg.Length;
+
+            return new DMathExpression<int>(charLength) { HasSideEffet = false };
+        }
+    }
+
+    public class VB_LenB : VbNativeFunction
+    {
+        public VB_LenB(IVBScopeObject context)
+            : base(context, "LenB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            string strArg;
+
+            // Check if the argument is valid and can be converted to a string
+            if (!Converter.TryGetStringValue(args[0], out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            // Convert the string to a byte array using Unicode encoding
+            byte[] byteArray = Encoding.Unicode.GetBytes(strArg);
+
+            // The length in bytes is simply the length of the byte array
+            int byteLength = byteArray.Length;
+
+            return new DMathExpression<int>(byteLength) { HasSideEffet = false };
+        }
+    }
+
+    public class VB_Mid : VbNativeFunction
+    {
+        public VB_Mid(IVBScopeObject context, string identifier)
+            : base(context, identifier)
+        {
+        }
+        public VB_Mid(IVBScopeObject context)
+            : base(context, "Mid")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            string strArg;
+            int start, length;
+
+            // Check if the first argument (string) is valid
+            if (!Converter.TryGetStringValue(args[0], out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            // Check if the second argument (start position) is valid
+            if (!Converter.TryGetInt32Value(args[1], out start))
+            {
+                return DefaultExpression(args);
+            }
+
+            // Adjust for 1-based index (VB uses 1-based, C# uses 0-based)
+            start = start - 1;
+
+            // Determine if length argument is provided
+            if (args.Length > 2 && Converter.TryGetInt32Value(args[2], out length))
+            {
+                // Ensure length does not exceed the remaining string
+                if (start + length > strArg.Length)
+                {
+                    length = strArg.Length - start;
+                }
+            }
+            else
+            {
+                // If length is not provided, extract to the end of the string
+                length = strArg.Length - start;
+            }
+
+            // Check for valid start position and length
+            if (start < 0 || start >= strArg.Length || length < 0)
+            {
+                return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+            }
+
+            string result = strArg.Substring(start, length);
+            return new DSimpleStringExpression(result, Encoding.Unicode, Context.Options);
+        }
+    }
+
+
+    public class VB_MidB_S
+     : VB_MidB
+    {
+        public VB_MidB_S(IVBScopeObject context)
+       : base(context, "MidB$")
+        {
+        }
+    }
+    public class VB_MidB : VbNativeFunction
+    {
+        public VB_MidB(IVBScopeObject context, string identifier)
+            : base(context, identifier)
+        {
+        }
+
+        public VB_MidB(IVBScopeObject context)
+            : base(context, "MidB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            string strArg;
+            int startByte, lengthBytes;
+            
+            // Check if the first argument (string) is valid
+            if (!Converter.TryGetStringValue(args[0], out strArg))
+            {
+                return DefaultExpression(args);
+            }
+
+            // Convert the string to a byte array using the appropriate encoding
+            byte[] byteArray = Encoding.Unicode.GetBytes(strArg);
+
+            // Check if the second argument (start byte position) is valid
+            if (!Converter.TryGetInt32Value(args[1], out startByte))
+            {
+                return DefaultExpression(args);
+            }
+
+            // Adjust for 1-based index (VB uses 1-based, C# uses 0-based)
+            startByte = startByte - 1;
+
+            // Determine if length argument is provided
+            if (args.Length > 2 && Converter.TryGetInt32Value(args[2], out lengthBytes))
+            {
+                // Ensure length does not exceed the remaining bytes
+                if (startByte + lengthBytes > byteArray.Length)
+                {
+                    lengthBytes = byteArray.Length - startByte;
+                }
+            }
+            else
+            {
+                // If length is not provided, extract to the end of the byte array
+                lengthBytes = byteArray.Length - startByte;
+            }
+
+            // Check for valid start byte position and length
+            if (startByte < 0 || startByte >= byteArray.Length || lengthBytes < 0)
+            {
+                return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+            }
+
+            // Extract the specified byte range
+            byte[] resultBytes = byteArray.Skip(startByte).Take(lengthBytes).ToArray();
+
+            // Convert the result back to a string
+            string result = Encoding.Default.GetString(resultBytes);
+            return new DSimpleStringExpression(result, Encoding.Unicode, Context.Options);
+        }
+    }
+
+
+
     public class VB_Trim_S
      : VB_Trim
     {
@@ -301,6 +1662,327 @@ namespace vbSparkle.NativeMethods
         {
         }
     }
+
+
+    public class VB_LTrim_S
+     : VB_LTrim
+    {
+        public VB_LTrim_S(IVBScopeObject context)
+       : base(context, "LTrim$")
+        {
+        }
+    }
+
+    public class VB_RTrim_S
+     : VB_RTrim
+    {
+        public VB_RTrim_S(IVBScopeObject context)
+       : base(context, "RTrim$")
+        {
+        }
+    }
+
+    public class VB_LCase_S
+        : VB_LCase
+    {
+        public VB_LCase_S(IVBScopeObject context)
+       : base(context, "LCase$")
+        {
+        }
+    }
+
+    public class VB_UCase_S
+    : VB_UCase
+    {
+        public VB_UCase_S(IVBScopeObject context)
+       : base(context, "UCase$")
+        {
+        }
+    }
+
+    public class VB_LCase
+     : VbNativeFunction
+    {
+        public VB_LCase(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_LCase(IVBScopeObject context)
+            : base(context, "LCase")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+                return DefaultExpression(args);
+
+            string str = strArg.ToLowerInvariant();
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
+
+    }
+
+    public class VB_UCase
+     : VbNativeFunction
+    {
+        public VB_UCase(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_UCase(IVBScopeObject context)
+            : base(context, "UCase")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+                return DefaultExpression(args);
+
+            string str = strArg.ToUpperInvariant();
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
+
+    }
+
+    public class VB_Left_S
+    : VB_Left
+    {
+        public VB_Left_S(IVBScopeObject context)
+       : base(context, "Left$")
+        {
+        }
+    }
+
+    public class VB_Right_S
+    : VB_Right
+    {
+        public VB_Right_S(IVBScopeObject context)
+       : base(context, "Right$")
+        {
+        }
+    }
+
+    public class VB_Left
+     : VbNativeFunction
+    {
+        public VB_Left(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_Left(IVBScopeObject context)
+            : base(context, "Left")
+        {
+        }
+
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DExpression arg1 = args.FirstOrDefault();
+                DExpression arg2 = args[1];
+
+                string strArg;
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
+                int count;
+                if (!Converter.TryGetInt32Value(arg2, out count))
+                    return DefaultExpression(args);
+
+                if (count < 0)
+                    return DefaultExpression(args);
+
+                if (count > strArg.Length) 
+                    count = strArg.Length;
+
+                string str = strArg.Substring(0, count);
+                return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+    public class VB_Right
+     : VbNativeFunction
+    {
+        public VB_Right(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_Right(IVBScopeObject context)
+            : base(context, "Right")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DExpression arg1 = args.FirstOrDefault();
+                DExpression arg2 = args[1];
+
+                string strArg;
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
+                int count;
+                if (!Converter.TryGetInt32Value(arg2, out count))
+                    return DefaultExpression(args);
+
+                if (count < 0)
+                    return DefaultExpression(args);
+
+                if (count > strArg.Length)
+                    count = strArg.Length;
+
+                string str = strArg.Substring(strArg.Length - count);
+                return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
+
+    public class VB_LeftB_S
+        : VB_LeftB
+    {
+        public VB_LeftB_S(IVBScopeObject context)
+       : base(context, "LeftB$")
+        {
+        }
+    }
+
+    public class VB_RightB_S
+        : VB_RightB
+    {
+        public VB_RightB_S(IVBScopeObject context)
+       : base(context, "RightB$")
+        {
+        }
+    }
+
+    public class VB_LeftB : VbNativeFunction
+    {
+        public VB_LeftB(IVBScopeObject context, string identifier)
+            : base(context, identifier)
+        {
+        }
+
+        public VB_LeftB(IVBScopeObject context)
+            : base(context, "LeftB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DExpression arg1 = args.FirstOrDefault();
+                DExpression arg2 = args[1];
+
+                string strArg;
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
+                int byteCount;
+                if (!Converter.TryGetInt32Value(arg2, out byteCount))
+                    return DefaultExpression(args);
+
+                if (byteCount < 0)
+                    return DefaultExpression(args);
+
+                // Convert the string to a byte array using Unicode encoding
+                byte[] byteArray = Encoding.Unicode.GetBytes(strArg);
+
+                // Ensure the byteCount does not exceed the length of the byte array
+                if (byteCount > byteArray.Length)
+                    byteCount = byteArray.Length;
+
+                // Extract the specified number of bytes
+                byte[] resultBytes = byteArray.Take(byteCount).ToArray();
+
+                // Convert the result back to a string
+                string result = Encoding.Unicode.GetString(resultBytes);
+                return new DSimpleStringExpression(result, Encoding.Unicode, Context.Options);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+    public class VB_RightB : VbNativeFunction
+    {
+        public VB_RightB(IVBScopeObject context, string identifier)
+            : base(context, identifier)
+        {
+        }
+
+        public VB_RightB(IVBScopeObject context)
+            : base(context, "RightB")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            try
+            {
+                DExpression arg1 = args.FirstOrDefault();
+                DExpression arg2 = args[1];
+
+                string strArg;
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
+                int byteCount;
+                if (!Converter.TryGetInt32Value(arg2, out byteCount))
+                    return DefaultExpression(args);
+
+                if (byteCount < 0)
+                    return DefaultExpression(args);
+
+                // Convert the string to a byte array using Unicode encoding
+                byte[] byteArray = Encoding.Unicode.GetBytes(strArg);
+
+                // Ensure the byteCount does not exceed the length of the byte array
+                if (byteCount > byteArray.Length)
+                    byteCount = byteArray.Length;
+
+                // Extract the specified number of bytes from the end of the byte array
+                byte[] resultBytes = byteArray.Skip(byteArray.Length - byteCount).Take(byteCount).ToArray();
+
+                // Convert the result back to a string
+                string result = Encoding.Unicode.GetString(resultBytes);
+                return new DSimpleStringExpression(result, Encoding.Unicode, Context.Options);
+            }
+            catch (Exception ex)
+            {
+                return DefaultExpression(args);
+            }
+        }
+    }
+
 
     public class VB_Trim
      : VbNativeFunction
@@ -326,7 +2008,58 @@ namespace vbSparkle.NativeMethods
             string str = strArg.Trim(' ');
             return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
         }
+    }
 
+
+    public class VB_LTrim
+     : VbNativeFunction
+    {
+        public VB_LTrim(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_LTrim(IVBScopeObject context)
+            : base(context, "LTrim")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+                return DefaultExpression(args);
+
+            string str = strArg.TrimStart(' ');
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
+    }
+    public class VB_RTrim
+        : VbNativeFunction
+    {
+        public VB_RTrim(IVBScopeObject context, string name)
+            : base(context, name)
+        {
+        }
+        public VB_RTrim(IVBScopeObject context)
+            : base(context, "RTrim")
+        {
+        }
+
+        public override DExpression Evaluate(params DExpression[] args)
+        {
+            DExpression arg1 = args.FirstOrDefault();
+
+            string strArg;
+
+            if (!Converter.TryGetStringValue(arg1, out strArg))
+                return DefaultExpression(args);
+
+            string str = strArg.TrimEnd(' ');
+            return new DSimpleStringExpression(str, Encoding.Unicode, Context.Options);
+        }
     }
 
     public class VB_Space_S : VB_Space
@@ -1194,6 +2927,21 @@ namespace vbSparkle.NativeMethods
 
             output = false;
             return false;
+        }
+
+
+        public static bool TryGetArrayExpression(DExpression expr, out DArrayExpression arrayExpression)
+        {
+            if (expr is DArrayExpression)
+            {
+                arrayExpression = (DArrayExpression)expr;
+                return true;
+            }
+            else
+            {
+                arrayExpression = null;
+                return false;
+            }
         }
     }
 }

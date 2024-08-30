@@ -1,20 +1,18 @@
 {
   "profiles": {
     "Help": {
-      "commandName": "Project",
-      "commandLineArgs": ""
+      "commandName": "Project"
     },
     "Sample_7": {
       "commandName": "Project",
-      "commandLineArgs": "-p $(SolutionDir)\\Resources\\samples\\sample_11.txt"
+      "commandLineArgs": "-p D:\\Git\\Public\\vbSparkle\\Resources\\samples\\sample_92.txt"
     },
     "Sample_10": {
       "commandName": "Project",
       "commandLineArgs": "-p $(SolutionDir)\\Resources\\samples\\sample_10.txt --sym-rename-mode All"
     },
     "vbSparkle.Console": {
-      "commandName": "Project",
-      "commandLineArgs": ""
+      "commandName": "Project"
     }
   }
 }

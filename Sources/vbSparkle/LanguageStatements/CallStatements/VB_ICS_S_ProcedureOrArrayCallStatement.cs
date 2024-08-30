@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using vbSparkle.EvaluationObjects;
 
 namespace vbSparkle
 {
@@ -79,6 +80,38 @@ namespace vbSparkle
             {
                 if (CallArgs.Count() == 0)
                     return (identifiedObject as VbUserVariable).TryEvaluate();
+                else
+                {
+                    try
+                    {
+                        var objArray = (identifiedObject as VbUserVariable);
+                        DArrayExpression arrExp = objArray.CurrentValue as DArrayExpression;
+
+                        if (arrExp != null)
+                        {
+                            if (CallArgs.Count == 1)
+                            {
+                                var argLevel1 = CallArgs[0];
+                                if (argLevel1.Count() == 1)
+                                {
+                                    DExpression idxExp = argLevel1[0].ValueStatement.Evaluate();
+                                    int idx;
+                                    if (vbSparkle.NativeMethods.Converter.TryGetInt32Value(idxExp, out idx))
+                                    {
+                                        if (idx < arrExp.Items.Count)
+                                        {
+                                            DExpression valueExp = arrExp.Items[idx];
+                                            return valueExp;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
             }
 
             return GetAssignableExpression(true);

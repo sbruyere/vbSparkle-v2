@@ -8,9 +8,9 @@
         "type": "antlr-debug",
         "request": "launch",
         "name": "Debug Current Grammar",
-        "input": "<to_be_defined>",
+        "input": "D:\\Git\\Public\\vbSparkle\\Resources\\samples\\sample_92.txt",
         "visualParseTree": true,
-        "startRule": "inlineBlock",
+        "startRule": "startRule",
         "grammar": "${file}"
     },
     {

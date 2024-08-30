@@ -28,6 +28,11 @@ namespace vbSparkle
             Add(new VbNativeConstants(this, "vbNullString",     new DSimpleStringExpression("", Encoding.Unicode, this.Options)));
             Add(new VbNativeConstants(this, "vbObjectError",    new DMathExpression<int>(-0x7FFC0000)));
 
+            Add(new VbNativeConstants(this, "vbUseCompareOption", new DMathExpression<int>(-1)));
+            Add(new VbNativeConstants(this, "vbBinaryCompare", new DMathExpression<int>(0)));
+            Add(new VbNativeConstants(this, "vbTextCompare", new DMathExpression<int>(1)));
+            Add(new VbNativeConstants(this, "vbDatabaseCompare", new DMathExpression<int>(2)));
+
             // Strings
             Add(new NativeMethods.VB_Chr(this));
             Add(new NativeMethods.VB_Chr_S(this));
@@ -46,45 +51,51 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "FormatDateTime"));   // TODO
             Add(new NativeMethods.VB_MonitoringFunction(this, "FormatNumber"));     // TODO
             Add(new NativeMethods.VB_MonitoringFunction(this, "FormatPercent"));    // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "InStr"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "InStrB"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "InStrRev"));         // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Join"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LCase"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LCase$"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Left"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Left$"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LeftB"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LeftB$"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Len"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LenB"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LTrim"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LTrim$"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Mid"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Mid$"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "MidB"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "MidB$"));            // TODO
+
+            Add(new NativeMethods.VB_InStr(this));
+            Add(new NativeMethods.VB_InStrB(this));
+            Add(new NativeMethods.VB_InStrRev(this));
+            Add(new NativeMethods.VB_LCase(this));
+            Add(new NativeMethods.VB_LCase_S(this));
+            Add(new NativeMethods.VB_UCase(this));
+            Add(new NativeMethods.VB_UCase_S(this));
+            Add(new NativeMethods.VB_Len(this));
+            Add(new NativeMethods.VB_LenB(this));
+            Add(new NativeMethods.VB_Mid(this));
+            Add(new NativeMethods.VB_Mid_S(this));
+            Add(new NativeMethods.VB_MidB(this));
+            Add(new NativeMethods.VB_MidB_S(this));
             Add(new NativeMethods.VB_Replace(this));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Right"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Right$"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "RightB"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "RightB$"));          // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "RTrim"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "RTrim$"));           // TODO
+
+            Add(new NativeMethods.VB_Left(this));
+            Add(new NativeMethods.VB_Left_S(this));
+            Add(new NativeMethods.VB_LeftB(this));
+            Add(new NativeMethods.VB_LeftB_S(this));
+
+            Add(new NativeMethods.VB_Right(this));
+            Add(new NativeMethods.VB_Right_S(this));
+            Add(new NativeMethods.VB_RightB(this));
+            Add(new NativeMethods.VB_RightB_S(this));
 
             Add(new NativeMethods.VB_Space_S(this));
             Add(new NativeMethods.VB_Space(this));
 
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Split"));
+            Add(new NativeMethods.VB_Join(this));
+            Add(new NativeMethods.VB_Split(this));
+
             Add(new NativeMethods.VB_MonitoringFunction(this, "StrComp"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "StrConv"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "String"));
             Add(new NativeMethods.VB_MonitoringFunction(this, "String$"));
             Add(new NativeMethods.VB_StrReverse(this));
+
+            // Triming
             Add(new NativeMethods.VB_Trim(this));
             Add(new NativeMethods.VB_Trim_S(this));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "UCase"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "UCase$"));           // TODO
+            Add(new NativeMethods.VB_RTrim(this));
+            Add(new NativeMethods.VB_RTrim_S(this));
+            Add(new NativeMethods.VB_LTrim(this));
+            Add(new NativeMethods.VB_LTrim_S(this));
 
             // Math
             Add(new NativeMethods.VB_Abs(this));
@@ -100,25 +111,6 @@ namespace vbSparkle
             Add(new NativeMethods.VB_Sqr(this));
             Add(new NativeMethods.VB_Tan(this));
 
-            // FileSystem
-            Add(new NativeMethods.VB_MonitoringFunction(this, "CurDir"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "CurDir$"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Dir"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "EOF"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FileAttr"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FileCopy"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FileDateTime"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FileLen"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FreeFile"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "GetAttr"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Kill"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Loc"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LOF"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "MkDir"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Reset"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "RmDir"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Seek"));
-            Add(new NativeMethods.VB_MonitoringFunction(this, "SetAttr"));
 
             // Interaction
             Add(new NativeMethods.VB_MonitoringFunction(this, "AppActivate"));
@@ -162,24 +154,24 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "VarType"));
 
             // Financial
-            Add(new NativeMethods.VB_MonitoringFunction(this, "DDB"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "FV"));               // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "IPmt"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "IRR"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "MIRR"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "NPer"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "NPV"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Pmt"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "PPmt"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "PV"));               // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Rate"));             // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "SLN"));              // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "SYD"));              // TODO
+            Add(new NativeMethods.VB_DDB(this));
+            Add(new NativeMethods.VB_FV(this));
+            Add(new NativeMethods.VB_IPmt(this));
+            Add(new NativeMethods.VB_IRR(this));
+            Add(new NativeMethods.VB_MIRR(this));
+            Add(new NativeMethods.VB_NPer(this));
+            Add(new NativeMethods.VB_NPV(this));
+            Add(new NativeMethods.VB_Pmt(this));
+            Add(new NativeMethods.VB_PPmt(this));
+            Add(new NativeMethods.VB_PV(this));
+            Add(new NativeMethods.VB_Rate(this));
+            Add(new NativeMethods.VB_SLN(this));
+            Add(new NativeMethods.VB_SYD(this));
 
             // Arrays
-            Add(new NativeMethods.VB_MonitoringFunction(this, "Array"));            // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "LBound"));           // TODO
-            Add(new NativeMethods.VB_MonitoringFunction(this, "UBound"));           // TODO
+            Add(new NativeMethods.VB_Array(this));
+            Add(new NativeMethods.VB_LBound(this));
+            Add(new NativeMethods.VB_UBound(this));
 
             // DateTime
 
@@ -229,9 +221,27 @@ namespace vbSparkle
             Add(new NativeMethods.VB_MonitoringFunction(this, "Str$"));             // TODO
             Add(new NativeMethods.VB_Val(this));
 
-            // Arrays
+            // Non Deterministics
 
-
+            // FileSystem
+            Add(new NativeMethods.VB_MonitoringFunction(this, "CurDir"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "CurDir$"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "Dir"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "EOF"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "FileAttr"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "FileCopy"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "FileDateTime"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "FileLen"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "FreeFile"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "GetAttr"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "Kill"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "Loc"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "LOF"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "MkDir"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "Reset"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "RmDir"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "Seek"));
+            Add(new NativeMethods.VB_MonitoringFunction(this, "SetAttr"));
             // Specials
             Add(new NativeMethods.VB_Eval(this));
         }

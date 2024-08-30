@@ -1,0 +1,10 @@
+﻿    
+    Dim TestSplit
+    TestSplit = Split("v1;v2;v3", ";")
+    TestSplit(1) = "yop"
+
+    Dim testjoin
+    testjoin = Join(TestSplit)
+    Debug.Print testjoin
+    Debug.Print TestSplit(2)
+    

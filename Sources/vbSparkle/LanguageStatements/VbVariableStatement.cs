@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using vbSparkle.EvaluationObjects;
+using vbSparkle.NativeMethods;
 
 namespace vbSparkle
 {
@@ -28,6 +29,7 @@ namespace vbSparkle
                 variable.WithEvents = WithEvents;
 
                 context.DeclareVariable(variable);
+                
             }
         }
 
@@ -116,9 +118,27 @@ namespace vbSparkle
             if (bloc.LPAREN() != null)
             {
                 IsArray = true;
+
+                if (Subscripts != null && Subscripts.SubScripts != null)
+                {
+                    SubscriptsItems = Subscripts.SubScripts;
+                    IsMultidimensional = SubscriptsItems.Length > 1;
+
+                    if (IsMultidimensional)
+                    {
+                        IsSimpleArray = false;
+                    } 
+                    else
+                    {
+                        IsSimpleArray = SubscriptsItems[0].LBound == null;
+                        SimpleArrayDim = SubscriptsItems[0].UBound;
+                    }
+                }
             }
 
+
             context.DeclareVariable(this);
+
         }
 
         //public VbUserVariable(IVBScopeObject context, string identifier)
@@ -137,6 +157,10 @@ namespace vbSparkle
             get { return Context.GetIdentifiedObject(Identifier); }
         }
 
+        public VbSubScriptStatement[] SubscriptsItems { get; }
+        public bool IsMultidimensional { get; }
+        public bool IsSimpleArray { get; }
+        public VBValueStatement SimpleArrayDim { get; }
 
         public override DExpression Prettify(bool partialEvaluation)
         {
@@ -144,7 +168,22 @@ namespace vbSparkle
 
             if (IsArray)
             {
-                codeBlock += $"({Subscripts.Exp(partialEvaluation)})";
+                if (IsSimpleArray)
+                {
+                    DExpression dimExp = SimpleArrayDim.Evaluate();
+                    int arrayDim = 0;
+                    if (dimExp.IsValuable)
+                    {
+                        if (Converter.TryGetInt32Value(dimExp, out arrayDim))
+                        {
+                            this.Context.SetVarValue(this.Identifier, new DArrayExpression(arrayDim));
+                        }
+                    }
+                }
+
+                
+
+                codeBlock += $"({Subscripts.Exp(partialEvaluation)})";                
             }
 
             if (IsTypeDefined)
