@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MathNet.Symbolics;
 using vbSparkle.EvaluationObjects;
+using vbSparkle.Options;
 
 namespace vbSparkle
 {
@@ -18,6 +19,7 @@ namespace vbSparkle
             string operator_n, 
             DExpression leftExp, 
             DExpression rightExp,
+            EvaluatorOptions options,
             bool unaryOperation = false)
         {
             operator_n = FormatOperator(operator_n);
@@ -25,7 +27,7 @@ namespace vbSparkle
 
             if (operator_n == "&")
             {
-                return StrConcat(leftExp, rightExp);
+                return StrConcat(leftExp, rightExp, options);
             }
 
             if (
@@ -33,7 +35,7 @@ namespace vbSparkle
                 leftExp is IStringExpression &&
                 rightExp is IStringExpression)
             {
-                return StrConcat(leftExp, rightExp);
+                return StrConcat(leftExp, rightExp, options);
             }
 
 
@@ -178,18 +180,18 @@ namespace vbSparkle
             return new DCodeBlock($"{leftExp.ToExpressionString()} {operator_n} {rightExp.ToExpressionString()}");
         }
 
-        private static DExpression StrConcat(DExpression leftExp, DExpression rightExp)
+        private static DExpression StrConcat(DExpression leftExp, DExpression rightExp, EvaluatorOptions evaluatorOptions)
         {
             DComplexStringExpression leftStrExp;
 
             if (leftExp is DComplexStringExpression)
             {
                 //leftStrExp = leftExp as DComplexStringExpression; CAUSE BAD SIDE EFFECTS
-                leftStrExp = new DComplexStringExpression(leftExp);
+                leftStrExp = new DComplexStringExpression(leftExp, evaluatorOptions);
             }
             else
             {
-                leftStrExp = new DComplexStringExpression(leftExp);
+                leftStrExp = new DComplexStringExpression(leftExp, evaluatorOptions);
             }
 
             leftStrExp.Concat(rightExp);

@@ -29,6 +29,7 @@ namespace vbSparkle.EvaluationObjects
             return "Array(" + string.Join(", ", dExpressions) + ")";
         }
 
+
         public override string ToValueString()
         {
             return ToExpressionString();
@@ -54,13 +55,16 @@ namespace vbSparkle.EvaluationObjects
 
         public override bool HasSideEffet { get; set; } = false;
         public override bool IsValuable { get; set; } = true;
+        public EvaluatorOptions Options { get; }
 
-        public DComplexStringExpression()
+        public DComplexStringExpression(EvaluatorOptions options)
         {
+            Options = options;
         }
 
-        public DComplexStringExpression(DExpression leftExp)
+        public DComplexStringExpression(DExpression leftExp, EvaluatorOptions options)
         {
+            Options = options;
             Concat(leftExp);
         }
 
@@ -69,7 +73,16 @@ namespace vbSparkle.EvaluationObjects
 
             if (IsValuable)
             {
-                return VbUtils.StrValToExp(ToValueString());
+                string var = ToValueString();
+                if (Options != null &&
+                Options.LargeStringAllocationObserver != null &&
+                Options.LargeStringAllocationObserver.MinSize < var.Length)
+                {
+                    Options.LargeStringAllocationObserver.LargeStringAllocated.Add(var.Replace("\"\"", "\""));
+                }
+
+                return VbUtils.StrValToExp(var);
+
             }
             else
             {

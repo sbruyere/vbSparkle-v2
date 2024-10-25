@@ -105,6 +105,7 @@ namespace vbSparkle
         {
             if (identifier.Equals("execute", StringComparison.InvariantCultureIgnoreCase))
                 (0).ToString();
+
             string identifierKey = identifier.ToUpper();
             VbIdentifiedObject obj1 = null;
 

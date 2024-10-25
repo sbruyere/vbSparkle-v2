@@ -37,7 +37,7 @@ namespace vbSparkle.PreProcessor.Statements
 
                 var op = Operator;
 
-                DExpression result = Operation.DoOperation(op, left, right);
+                DExpression result = Operation.DoOperation(op, left, right, Context.Options);
 
                 return result;
             }

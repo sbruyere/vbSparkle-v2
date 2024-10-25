@@ -37,7 +37,7 @@ namespace vbSparkle
 
                 var op = Operator;
 
-                DExpression result = Operation.DoOperation(op, left, right, unaryOperation: true);
+                DExpression result = Operation.DoOperation(op, left, right, Context.Options, unaryOperation: true);
 
                 return result;
             } 
