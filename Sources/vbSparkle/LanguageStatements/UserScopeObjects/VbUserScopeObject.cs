@@ -103,7 +103,7 @@ namespace vbSparkle
 
         public virtual VbIdentifiedObject GetIdentifiedObject(string identifier)
         {
-            if (identifier.Equals("execute", StringComparison.InvariantCultureIgnoreCase))
+            if (identifier.Equals("Left", StringComparison.InvariantCultureIgnoreCase))
                 (0).ToString();
 
             string identifierKey = identifier.ToUpper();

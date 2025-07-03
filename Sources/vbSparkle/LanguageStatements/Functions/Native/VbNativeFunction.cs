@@ -26,7 +26,7 @@ namespace vbSparkle
                     allConstants = false;
             }
 
-            if (allConstants)
+            //if (allConstants)
                 try
                 {
                     return Evaluate(fArgs.ToArray());

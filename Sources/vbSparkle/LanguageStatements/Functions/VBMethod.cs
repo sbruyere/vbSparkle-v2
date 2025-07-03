@@ -1794,12 +1794,16 @@ namespace vbSparkle.NativeMethods
 
                 string strArg;
 
-                if (!Converter.TryGetStringValue(arg1, out strArg))
-                    return DefaultExpression(args);
-
                 int count;
                 if (!Converter.TryGetInt32Value(arg2, out count))
                     return DefaultExpression(args);
+
+                if (count == 0)
+                    return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
 
                 if (count < 0)
                     return DefaultExpression(args);
@@ -1838,11 +1842,14 @@ namespace vbSparkle.NativeMethods
 
                 string strArg;
 
-                if (!Converter.TryGetStringValue(arg1, out strArg))
-                    return DefaultExpression(args);
-
                 int count;
                 if (!Converter.TryGetInt32Value(arg2, out count))
+                    return DefaultExpression(args);
+
+                if (count == 0)
+                    return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
                     return DefaultExpression(args);
 
                 if (count < 0)
@@ -1901,12 +1908,16 @@ namespace vbSparkle.NativeMethods
 
                 string strArg;
 
-                if (!Converter.TryGetStringValue(arg1, out strArg))
-                    return DefaultExpression(args);
-
                 int byteCount;
                 if (!Converter.TryGetInt32Value(arg2, out byteCount))
                     return DefaultExpression(args);
+
+                if (byteCount == 0)
+                    return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
 
                 if (byteCount < 0)
                     return DefaultExpression(args);
@@ -1952,12 +1963,17 @@ namespace vbSparkle.NativeMethods
 
                 string strArg;
 
-                if (!Converter.TryGetStringValue(arg1, out strArg))
-                    return DefaultExpression(args);
-
                 int byteCount;
                 if (!Converter.TryGetInt32Value(arg2, out byteCount))
                     return DefaultExpression(args);
+
+
+                if (byteCount == 0)
+                    return new DSimpleStringExpression(string.Empty, Encoding.Unicode, Context.Options);
+
+                if (!Converter.TryGetStringValue(arg1, out strArg))
+                    return DefaultExpression(args);
+
 
                 if (byteCount < 0)
                     return DefaultExpression(args);
