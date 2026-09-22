@@ -244,3 +244,7 @@ Then, when the Prettify method is called, sub-element are prettified with same p
 
 ## Credits
 - This project is under copyright of the **Airbus CERT** and distributed under the **Apache 2.0 license**
+
+# See also
+
+* [VBReFormer](https://decompiler-vb.net/) — Visual Basic 5/6 decompiler, disassembler and compiled-UI editor by the same author (P-Code and native code, free edition).
